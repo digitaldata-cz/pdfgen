@@ -40,8 +40,7 @@ func main() {
 </html>
 `})
 	if err != nil {
-		log.Fatalf("could not greet: %v", err)
+		log.Fatalf("Error: %s", err.Error())
 	}
 	ioutil.WriteFile("test.pdf", r.Pdf, 0644)
-	log.Printf("Odpoved: %s", r.Pdf)
 }
