@@ -37,7 +37,8 @@ RUN apt update && apt install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 RUN wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.buster_amd64.deb \
     && dpkg -i wkhtmltox_0.12.6-1.buster_amd64.deb \
-    && rm -f wkhtmltox_0.12.6-1.buster_amd64.deb
+    && rm -f wkhtmltox_0.12.6-1.buster_amd64.deb \
+    rm -f /usr/local/bin/wkhtmltopdf /usr/local/bin/wkhtmltoimage
 COPY --from=builder /build/pdfgen .
 EXPOSE 50051
 ENTRYPOINT ["/pdfgen"]
