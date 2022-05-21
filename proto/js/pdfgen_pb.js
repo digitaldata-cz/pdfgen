@@ -587,7 +587,7 @@ proto.pdfgen.GenerateResponse.prototype.toObject = function(opt_includeInstance)
  */
 proto.pdfgen.GenerateResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
-    report: msg.getReport_asB64(),
+    pdf: msg.getPdf_asB64(),
     error: jspb.Message.getFieldWithDefault(msg, 2, "")
   };
 
@@ -627,7 +627,7 @@ proto.pdfgen.GenerateResponse.deserializeBinaryFromReader = function(msg, reader
     switch (field) {
     case 1:
       var value = /** @type {!Uint8Array} */ (reader.readBytes());
-      msg.setReport(value);
+      msg.setPdf(value);
       break;
     case 2:
       var value = /** @type {string} */ (reader.readString());
@@ -662,7 +662,7 @@ proto.pdfgen.GenerateResponse.prototype.serializeBinary = function() {
  */
 proto.pdfgen.GenerateResponse.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getReport_asU8();
+  f = message.getPdf_asU8();
   if (f.length > 0) {
     writer.writeBytes(
       1,
@@ -680,35 +680,35 @@ proto.pdfgen.GenerateResponse.serializeBinaryToWriter = function(message, writer
 
 
 /**
- * optional bytes report = 1;
+ * optional bytes pdf = 1;
  * @return {!(string|Uint8Array)}
  */
-proto.pdfgen.GenerateResponse.prototype.getReport = function() {
+proto.pdfgen.GenerateResponse.prototype.getPdf = function() {
   return /** @type {!(string|Uint8Array)} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
 /**
- * optional bytes report = 1;
- * This is a type-conversion wrapper around `getReport()`
+ * optional bytes pdf = 1;
+ * This is a type-conversion wrapper around `getPdf()`
  * @return {string}
  */
-proto.pdfgen.GenerateResponse.prototype.getReport_asB64 = function() {
+proto.pdfgen.GenerateResponse.prototype.getPdf_asB64 = function() {
   return /** @type {string} */ (jspb.Message.bytesAsB64(
-      this.getReport()));
+      this.getPdf()));
 };
 
 
 /**
- * optional bytes report = 1;
+ * optional bytes pdf = 1;
  * Note that Uint8Array is not supported on all browsers.
  * @see http://caniuse.com/Uint8Array
- * This is a type-conversion wrapper around `getReport()`
+ * This is a type-conversion wrapper around `getPdf()`
  * @return {!Uint8Array}
  */
-proto.pdfgen.GenerateResponse.prototype.getReport_asU8 = function() {
+proto.pdfgen.GenerateResponse.prototype.getPdf_asU8 = function() {
   return /** @type {!Uint8Array} */ (jspb.Message.bytesAsU8(
-      this.getReport()));
+      this.getPdf()));
 };
 
 
@@ -716,7 +716,7 @@ proto.pdfgen.GenerateResponse.prototype.getReport_asU8 = function() {
  * @param {!(string|Uint8Array)} value
  * @return {!proto.pdfgen.GenerateResponse} returns this
  */
-proto.pdfgen.GenerateResponse.prototype.setReport = function(value) {
+proto.pdfgen.GenerateResponse.prototype.setPdf = function(value) {
   return jspb.Message.setProto3BytesField(this, 1, value);
 };
 

@@ -1,11 +1,10 @@
-module github.com/digitaldata-cz/pdfgen
+module github.com/digitaldata-cz/pdfgen/test
 
 go 1.18
 
-replace github.com/digitaldata-cz/pdfgen/proto/go => ./proto/go
+replace github.com/digitaldata-cz/pdfgen/proto/go => ../proto/go
 
 require (
-	github.com/digitaldata-cz/htmltopdf v0.0.0-20220509194552-f7a67973ea88
 	github.com/digitaldata-cz/pdfgen/proto/go v0.0.0
 	google.golang.org/grpc v1.46.2
 )

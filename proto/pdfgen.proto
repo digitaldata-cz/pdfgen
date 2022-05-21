@@ -23,7 +23,7 @@ message GenerateRequest {
 
 // Response message
 message GenerateResponse {
-  bytes report = 1;
+  bytes pdf = 1;
   string error = 2;
 }
 

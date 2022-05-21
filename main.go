@@ -119,8 +119,8 @@ func (s *tGrpcServer) Generate(ctx context.Context, in *pb.GenerateRequest) (*pb
 		converter.UseCompression = true
 		return converter.Run(out)
 	}); err != nil {
-		return &pb.GenerateResponse{Report: nil, Error: err.Error()}, nil
+		return &pb.GenerateResponse{Pdf: nil, Error: err.Error()}, nil
 	}
 	fmt.Println("gRPC JEDEEEEEE")
-	return &pb.GenerateResponse{Report: out.Bytes()}, nil
+	return &pb.GenerateResponse{Pdf: out.Bytes()}, nil
 }

@@ -1,3 +1,6 @@
 pdfgen
 pdfgen.exe
 wkhtmltox.dll
+
+.vscode
+.DS_Store
