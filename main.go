@@ -65,7 +65,7 @@ func callFunc(f func() error) error {
 
 func startServer() {
 	var (
-		ipAddress = "0.0.0.0"
+		ipAddress = "::"
 		port      = "50051"
 	)
 
