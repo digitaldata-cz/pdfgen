@@ -3,18 +3,19 @@ package main
 import (
 	"bytes"
 	"context"
-	"fmt"
 	"log"
 	"net"
 	"os"
 	"os/signal"
 	"runtime"
 	"strings"
+	"time"
 
 	"github.com/digitaldata-cz/htmltopdf"
 	pb "github.com/digitaldata-cz/pdfgen/proto/go"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/peer"
 )
 
 var run = make(chan func())
@@ -90,6 +91,11 @@ func startServer() {
 }
 
 func (s *tGrpcServer) Generate(ctx context.Context, in *pb.GenerateRequest) (*pb.GenerateResponse, error) {
+	startTime := time.Now()
+	defer func() {
+		p, _ := peer.FromContext(ctx)
+		log.Printf("[%s] Generate request %s", p.Addr.String(), time.Since(startTime))
+	}()
 	out := bytes.NewBuffer(nil)
 	if err := callFunc(func() error {
 		tmpl, err := htmltopdf.NewObjectFromReader(strings.NewReader(in.GetHtmlBody()))
@@ -121,6 +127,5 @@ func (s *tGrpcServer) Generate(ctx context.Context, in *pb.GenerateRequest) (*pb
 	}); err != nil {
 		return &pb.GenerateResponse{Pdf: nil, Error: err.Error()}, nil
 	}
-	fmt.Println("gRPC JEDEEEEEE")
 	return &pb.GenerateResponse{Pdf: out.Bytes()}, nil
 }
