@@ -1,4 +1,4 @@
-module github.com/digitaldata-cz/pdfgen/proto
+module github.com/digitaldata-cz/pdfgen/proto/go
 
 go 1.18
 

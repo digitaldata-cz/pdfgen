@@ -1,11 +1,11 @@
 syntax = "proto3";
 
-option go_package = "github.com/digitaldata-cz/pdfgen/proto";
+option go_package = "github.com/digitaldata-cz/pdfgen/proto/go";
 
-package wkprint;
+package pdfgen;
 
-// The request message containing the user's name.
-message ReportRequest {
+// Request message
+message GenerateRequest {
   string name = 1;
   uint64 dpi = 2;
   double zoom = 3;
@@ -21,13 +21,13 @@ message ReportRequest {
   string htmlFooter = 13;
 }
 
-// The response message containing the greetings
-message ReportResponse {
+// Response message
+message GenerateResponse {
   bytes report = 1;
+  string error = 2;
 }
 
-// The greeting service definition.
-service Printer {
-  // Sends a greeting
-  rpc PrintReport(ReportRequest) returns(ReportResponse) {}
+// GRPC service
+service PdfGen {
+  rpc Generate(GenerateRequest) returns(GenerateResponse) {}
 }

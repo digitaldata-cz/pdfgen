@@ -15,7 +15,7 @@ RUN apt update && apt install -y --no-install-recommends \
 RUN wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.buster_amd64.deb
 RUN dpkg -i wkhtmltox_0.12.6-1.buster_amd64.deb
 ADD *.go go.mod go.sum ./
-ADD proto/*.go proto/go.mod proto/go.sum ./proto/
+ADD proto/go/*.go proto/go/go.mod proto/go/go.sum ./proto/go/
 RUN go get
 RUN CGO_ENABLED=1 GOOS=linux go build -trimpath -ldflags "-s -w" -a -o pdfgen .
 

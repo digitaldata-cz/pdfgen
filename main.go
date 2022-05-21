@@ -12,20 +12,16 @@ import (
 	"strings"
 
 	"github.com/digitaldata-cz/htmltopdf"
-	pb "github.com/digitaldata-cz/pdfgen/proto"
+	pb "github.com/digitaldata-cz/pdfgen/proto/go"
 
 	"google.golang.org/grpc"
 )
 
-var (
-	run       = make(chan func())
-	ipAddress = "0.0.0.0"
-	port      = "50051"
-)
+var run = make(chan func())
 
-type tServer struct {
+type tGrpcServer struct {
 	// TODO: Nastudovat k cemu je "UnimplementedPrinterServer"
-	pb.UnimplementedPrinterServer
+	pb.UnimplementedPdfGenServer
 }
 
 func init() {
@@ -67,27 +63,33 @@ func callFunc(f func() error) error {
 }
 
 func startServer() {
-	if os.Getenv("PS_IP") != "" {
-		ipAddress = os.Getenv("IP")
-	}
-	if os.Getenv("PS_PORT") != "" {
-		port = os.Getenv("PORT")
+	var (
+		ipAddress = "0.0.0.0"
+		port      = "50051"
+	)
+
+	if s := os.Getenv("PS_IP"); s != "" {
+		ipAddress = s
 	}
 
-	lis, err := net.Listen("tcp", fmt.Sprintf("%s:%s", ipAddress, port))
+	if s := os.Getenv("PS_PORT"); s != "" {
+		port = s
+	}
+
+	listener, err := net.Listen("tcp", net.JoinHostPort(ipAddress, port))
 	if err != nil {
-		log.Fatalf("failed to listen: %v", err)
-
+		log.Fatalf("failed to listen: %s", err.Error())
 	}
+
 	s := grpc.NewServer()
-	pb.RegisterPrinterServer(s, &tServer{})
-	log.Printf("server listening at %v", lis.Addr())
-	if err := s.Serve(lis); err != nil {
-		log.Fatalf("failed to serve: %v", err)
+	pb.RegisterPdfGenServer(s, &tGrpcServer{})
+	log.Printf("server listening at %s", listener.Addr().String())
+	if err := s.Serve(listener); err != nil {
+		log.Fatalf("failed to serve: %s", err.Error())
 	}
 }
 
-func (s *tServer) PrintReport(ctx context.Context, in *pb.ReportRequest) (*pb.ReportResponse, error) {
+func (s *tGrpcServer) Generate(ctx context.Context, in *pb.GenerateRequest) (*pb.GenerateResponse, error) {
 	out := bytes.NewBuffer(nil)
 	if err := callFunc(func() error {
 		tmpl, err := htmltopdf.NewObjectFromReader(strings.NewReader(in.GetHtmlBody()))
@@ -117,9 +119,8 @@ func (s *tServer) PrintReport(ctx context.Context, in *pb.ReportRequest) (*pb.Re
 		converter.UseCompression = true
 		return converter.Run(out)
 	}); err != nil {
-		// TODO: vratit chybu na clienta (pridat do protoStruct Err)
-		return &pb.ReportResponse{Report: nil}, nil
+		return &pb.GenerateResponse{Report: nil, Error: err.Error()}, nil
 	}
 	fmt.Println("gRPC JEDEEEEEE")
-	return &pb.ReportResponse{Report: out.Bytes()}, nil
+	return &pb.GenerateResponse{Report: out.Bytes()}, nil
 }
