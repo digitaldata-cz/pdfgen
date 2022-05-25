@@ -113,6 +113,26 @@ func (s *tGrpcServer) Generate(ctx context.Context, in *pb.GenerateRequest) (*pb
 		if in.GetGrayscale() {
 			colorMode = "Grayscale"
 		}
+
+		headerFile, err := templateToTempFile(in.GetHtmlHeader())
+		if err != nil {
+			return err
+		}
+		defer func() {
+			headerFile.Close()
+			os.Remove(headerFile.Name())
+		}()
+		footerFile, err := templateToTempFile(in.GetHtmlFooter())
+		if err != nil {
+			return err
+		}
+		defer func() {
+			footerFile.Close()
+			os.Remove(footerFile.Name())
+		}()
+
+		tmpl.Header.CustomLocation = headerFile.Name()
+		tmpl.Footer.CustomLocation = footerFile.Name()
 		tmpl.Zoom = in.GetZoom()
 		converter.DPI = in.GetDpi()
 		converter.PaperSize = htmltopdf.PaperSize(in.GetPageSize())
@@ -128,4 +148,18 @@ func (s *tGrpcServer) Generate(ctx context.Context, in *pb.GenerateRequest) (*pb
 		return &pb.GenerateResponse{Pdf: nil, Error: err.Error()}, nil
 	}
 	return &pb.GenerateResponse{Pdf: out.Bytes()}, nil
+}
+
+func templateToTempFile(templateData string) (*os.File, error) {
+	if templateData == "" {
+		return nil, nil
+	}
+	file, err := os.CreateTemp("", "portunusTmpl-*.html")
+	if err != nil {
+		return nil, err
+	}
+	if _, err := file.Write([]byte(templateData)); err != nil {
+		return nil, err
+	}
+	return file, nil
 }
