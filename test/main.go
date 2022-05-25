@@ -22,7 +22,8 @@ func main() {
 	// Contact the server and print out its response.
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
 	defer cancel()
-	r, err := c.Generate(ctx, &pb.GenerateRequest{HtmlBody: `<html>
+	r, err := c.Generate(ctx, &pb.GenerateRequest{
+		HtmlBody: `<html>
 <body>
 	<h1>Lorem ipsum...</h1>
 	<hr>
@@ -38,9 +39,15 @@ func main() {
 	fermentum tortor id mi. Morbi scelerisque luctus velit.</p>
 </body>
 </html>
-`})
+`,
+		HtmlHeader: "<h1>Header</h1>",
+		HtmlFooter: "<h1>Footer</h1>",
+	})
 	if err != nil {
 		log.Fatalf("Error: %s", err.Error())
+	}
+	if r.Error != "" {
+		log.Fatalf("Error: %s", r.Error)
 	}
 	ioutil.WriteFile("test.pdf", r.Pdf, 0644)
 }
