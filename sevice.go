@@ -27,7 +27,7 @@ func startServer(config *tConfig) {
 		logger.Errorf("errStartServer: %s", err.Error())
 		os.Exit(1)
 	}
-	s := grpc.NewServer()
+	s := grpc.NewServer(grpc.MaxMsgSize(1024 * 1024 * 100))
 	pb.RegisterPdfGenServer(s, &tGrpcServer{})
 	logger.Infof("server listening at %s", listener.Addr().String())
 	if err := s.Serve(listener); err != nil {
