@@ -15,9 +15,9 @@ type tConfig struct {
 func (p *tProgram) loadConfig() {
 	p.config = &tConfig{Address: "localhost", Port: "50051"}
 	// Try read from env if app is running from container
-	if os.Getenv("PS_IP") != "" && os.Getenv("PS_PORT") != "" {
-		p.config.Address = os.Getenv("PS_IP")
-		p.config.Port = os.Getenv("PS_PORT")
+	if os.Getenv("PG_IP") != "" && os.Getenv("PG_PORT") != "" {
+		p.config.Address = os.Getenv("PG_IP")
+		p.config.Port = os.Getenv("PG_PORT")
 		return
 	}
 	file, err := ioutil.ReadFile("config.yaml")

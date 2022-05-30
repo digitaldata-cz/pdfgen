@@ -20,12 +20,24 @@ func main() {
 	c := pb.NewPdfGenClient(conn)
 
 	// Contact the server and print out its response.
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 	r, err := c.Generate(ctx, &pb.GenerateRequest{
-		HtmlBody: `<html>
+		Name:         "test",
+		Dpi:          96,
+		Zoom:         1,
+		PageSize:     "A4",
+		Grayscale:    false,
+		Orientation:  "Landscape",
+		MarginLeft:   "10mm",
+		MarginRight:  "10mm",
+		MarginTop:    "10mm",
+		MarginBottom: "20mm",
+		HtmlBody: `
+<!DOCTYPE html>
+<html>
 <body>
-	<h1>Lorem ipsum...</h1>
+	<h1 style="color: red">Lorem ipsum...</h1>
 	<hr>
 	<p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Vivamus ac leo pretium faucibus.
 	Duis ante orci, molestie vitae vehicula venenatis, tincidunt ac pede. Nulla est. Duis sapien
@@ -40,14 +52,38 @@ func main() {
 </body>
 </html>
 `,
-		HtmlHeader: "<h1>Header</h1>",
-		HtmlFooter: "<h1>Footer</h1>",
+		HtmlHeader: "<!DOCTYPE html> <h1>Header</h1>",
+		HtmlFooter: `
+<!DOCTYPE html>  
+<html>    
+<body onload="getPdfInfo()">      
+    <p style="width: 30mm; display: inline-block;">FOOTER - Page:</p>      
+    <p style="width: 5mm; display: inline-block;" id="pdfkit_page_current"></p>     
+    <p style="width: 3mm; display: inline-block;">/</p>
+    <p style="width: 8mm; display: inline-block;" id="pdfkit_page_count"></p>
+</body>
+</html>
+<script>
+var pdfInfo = {};
+var x = document.location.search.substring(1).split('&');
+for (var i in x) {
+    var z = x[i].split('=', 2);
+    pdfInfo[z[0]] = unescape(z[1]);
+}
+function getPdfInfo() {      
+    var page = pdfInfo.page || 1;
+    var pageCount = pdfInfo.topage || 1;
+    document.getElementById('pdfkit_page_current').textContent = page;
+    document.getElementById('pdfkit_page_count').textContent = pageCount;
+}  
+</script>
+		`,
 	})
 	if err != nil {
-		log.Fatalf("Error: %s", err.Error())
+		log.Fatalf("Error1: %s", err.Error())
 	}
 	if r.Error != "" {
-		log.Fatalf("Error: %s", r.Error)
+		log.Fatalf("Error2: %s", r.Error)
 	}
 	ioutil.WriteFile("test.pdf", r.Pdf, 0644)
 }
