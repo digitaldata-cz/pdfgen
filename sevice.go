@@ -61,26 +61,29 @@ func (s *tGrpcServer) Generate(ctx context.Context, in *pb.GenerateRequest) (*pb
 		if in.GetGrayscale() {
 			colorMode = "Grayscale"
 		}
-
-		headerFile, err := templateToTempFile(in.GetHtmlHeader())
-		if err != nil {
-			return err
+		if in.GetHtmlHeader() != "" {
+			headerFile, err := templateToTempFile(in.GetHtmlHeader())
+			if err != nil {
+				return err
+			}
+			defer func() {
+				headerFile.Close()
+				os.Remove(headerFile.Name())
+			}()
+			tmpl.Header.CustomLocation = headerFile.Name()
 		}
-		defer func() {
-			headerFile.Close()
-			os.Remove(headerFile.Name())
-		}()
-		footerFile, err := templateToTempFile(in.GetHtmlFooter())
-		if err != nil {
-			return err
+		if in.GetHtmlFooter() != "" {
+			footerFile, err := templateToTempFile(in.GetHtmlFooter())
+			if err != nil {
+				return err
+			}
+			defer func() {
+				footerFile.Close()
+				os.Remove(footerFile.Name())
+			}()
+			tmpl.Footer.CustomLocation = footerFile.Name()
 		}
-		defer func() {
-			footerFile.Close()
-			os.Remove(footerFile.Name())
-		}()
 
-		tmpl.Header.CustomLocation = headerFile.Name()
-		tmpl.Footer.CustomLocation = footerFile.Name()
 		tmpl.Zoom = in.GetZoom()
 		converter.DPI = in.GetDpi()
 		converter.PaperSize = htmltopdf.PaperSize(in.GetPageSize())
