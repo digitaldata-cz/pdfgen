@@ -84,6 +84,7 @@ func (s *tGrpcServer) Generate(ctx context.Context, in *pb.GenerateRequest) (*pb
 			tmpl.Footer.CustomLocation = footerFile.Name()
 		}
 
+		tmpl.EnableJavascript = true
 		tmpl.Zoom = in.GetZoom()
 		converter.DPI = in.GetDpi()
 		converter.PaperSize = htmltopdf.PaperSize(in.GetPageSize())
