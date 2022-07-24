@@ -40,5 +40,7 @@ RUN wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkh
     && rm -f wkhtmltox_0.12.6-1.buster_amd64.deb \
     rm -f /usr/local/bin/wkhtmltopdf /usr/local/bin/wkhtmltoimage
 COPY --from=builder /build/pdfgen .
+ENV IP=0.0.0.0
+ENV PORT=50051
 EXPOSE 50051
 ENTRYPOINT ["/pdfgen"]

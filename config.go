@@ -15,18 +15,23 @@ type tConfig struct {
 func (p *tProgram) loadConfig() {
 	p.config = &tConfig{Address: "localhost", Port: "50051"}
 	// Try read from env if app is running from container
-	if os.Getenv("PG_IP") != "" && os.Getenv("PG_PORT") != "" {
-		p.config.Address = os.Getenv("PG_IP")
-		p.config.Port = os.Getenv("PG_PORT")
+	if os.Getenv("IP") != "" && os.Getenv("PORT") != "" {
+		p.config.Address = os.Getenv("IP")
+		p.config.Port = os.Getenv("PORT")
 		return
 	}
-	file, err := ioutil.ReadFile("config.yaml")
-	if err != nil {
-		logger.Errorf("err-configLoad: %s", err.Error())
-		return // If config not found then use default values
-	}
-	if err := yaml.Unmarshal(file, &p.config); err != nil {
-		logger.Errorf("err-configUnmarshal: %s", err.Error())
-		os.Exit(1)
+	if _, err := os.Stat("config.yaml"); err == nil {
+		// Read config from file
+		data, err := ioutil.ReadFile("config.yaml")
+		if err != nil {
+			logger.Error(err.Error())
+			return
+		}
+		err = yaml.Unmarshal(data, p.config)
+		if err != nil {
+			logger.Error(err.Error())
+			os.Exit(1)
+		}
+		return
 	}
 }
