@@ -7,7 +7,7 @@ replace github.com/digitaldata-cz/pdfgen/proto/go => ./proto/go
 require (
 	github.com/digitaldata-cz/htmltopdf v0.0.0-20220509194552-f7a67973ea88
 	github.com/digitaldata-cz/pdfgen/proto/go v0.0.0
-	github.com/kardianos/service v1.2.1
+	github.com/kardianos/service v1.2.2-0.20220428125717-29f8c79c511b
 	google.golang.org/grpc v1.48.0
 	gopkg.in/yaml.v3 v3.0.1
 )
