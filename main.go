@@ -84,7 +84,7 @@ func main() {
 		case f := <-callFuncRun:
 			f()
 		case <-quit:
-			logger.Info("shutting down main runner")
+			logger.Info("Shutting down main runner")
 			return
 		}
 	}
@@ -98,7 +98,7 @@ func (p *tProgram) Start(s service.Service) error {
 
 func (p *tProgram) Stop(s service.Service) error {
 	close(p.exit)
-	logger.Info("Stopping service...")
+	logger.Info("Stopping service")
 	// <-time.After(time.Second * 3)
 	time.Sleep(3 * time.Second)
 	return nil

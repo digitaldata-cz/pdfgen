@@ -1,4 +1,4 @@
-FROM --platform=amd64 golang:1.18-buster AS builder
+FROM --platform=amd64 golang:1.19-rc-buster AS builder
 WORKDIR /build/
 RUN apt update && apt install -y --no-install-recommends \
     fontconfig \
