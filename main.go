@@ -4,7 +4,6 @@ import (
 	"flag"
 	"log"
 	"os"
-	"os/signal"
 	"path/filepath"
 	"runtime"
 	"time"
@@ -13,9 +12,8 @@ import (
 )
 
 var (
-	svcFlag     = flag.String("service", "", "Service controll (start, stop, install, uninstall)")
-	logger      service.Logger
-	callFuncRun = make(chan func())
+	svcFlag = flag.String("service", "", "Service controll (start, stop, install, uninstall)")
+	logger  service.Logger
 )
 
 type tProgram struct {
@@ -63,24 +61,9 @@ func main() {
 	}
 
 	// Start the service.
-	go func() {
-		if err := s.Run(); err != nil {
-			logger.Error(err.Error()) // #nosec G104
-			os.Exit(1)
-		}
-	}()
-
-	// Listen for functions that need to run on the main thread.
-	var quit = make(chan os.Signal, 1)
-	signal.Notify(quit, os.Interrupt)
-	for {
-		select {
-		case f := <-callFuncRun:
-			f()
-		case <-quit:
-			logger.Info("Shutting down main runner")
-			return
-		}
+	if err := s.Run(); err != nil {
+		logger.Error(err.Error()) // #nosec G104
+		os.Exit(1)
 	}
 }
 
