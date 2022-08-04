@@ -54,8 +54,8 @@ func (s *tGrpcServer) Generate(ctx context.Context, in *pb.GenerateRequest) (*pb
 	pdfg.Orientation.Set(in.GetOrientation())
 	pdfg.Grayscale.Set(in.GetGrayscale())
 	pdfg.PageSize.Set(in.GetPageSize())
-	//	pdfg.MarginLeft.Set(in.GetMarginLeft())
-	//	pdfg.MarginRight.Set(in.GetMarginRight())
+	// pdfg.MarginLeft.Set(in.GetMarginLeft())
+	// pdfg.MarginRight.Set(in.GetMarginRight())
 	// pdfg.MarginTop.Set(in.GetMarginTop())
 	// pdfg.MarginBottom.Set(in.GetMarginBottom())
 
