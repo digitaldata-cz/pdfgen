@@ -1,14 +1,13 @@
 package main
 
 import (
-	"bytes"
 	"context"
 	"net"
 	"os"
 	"strings"
 	"time"
 
-	"github.com/digitaldata-cz/htmltopdf"
+	htmltopdf "github.com/SebastiaanKlippert/go-wkhtmltopdf"
 	pb "github.com/digitaldata-cz/pdfgen/proto/go"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/peer"
@@ -45,23 +44,30 @@ func (s *tGrpcServer) Generate(ctx context.Context, in *pb.GenerateRequest) (*pb
 	defer func() {
 		logger.Infof("Generate request from %s finished aster %s", peer.Addr.String(), time.Since(startTime))
 	}()
-	out := bytes.NewBuffer(nil)
-	if err := callFunc(func() error {
-		tmpl, err := htmltopdf.NewObjectFromReader(strings.NewReader(in.GetHtmlBody()))
-		if err != nil {
-			return err
-		}
-		converter, err := htmltopdf.NewConverter()
-		if err != nil {
-			return err
-		}
-		defer converter.Destroy()
-		converter.Add(tmpl)
 
-		colorMode := "Color"
-		if in.GetGrayscale() {
-			colorMode = "Grayscale"
-		}
+	pdfg, err := htmltopdf.NewPDFGenerator()
+	if err != nil {
+		return nil, err
+	}
+
+	pdfg.Dpi.Set(uint(in.GetDpi()))
+	pdfg.Orientation.Set(in.GetOrientation())
+	pdfg.Grayscale.Set(in.GetGrayscale())
+	pdfg.PageSize.Set(in.GetPageSize())
+	//	pdfg.MarginLeft.Set(in.GetMarginLeft())
+	//	pdfg.MarginRight.Set(in.GetMarginRight())
+	// pdfg.MarginTop.Set(in.GetMarginTop())
+	// pdfg.MarginBottom.Set(in.GetMarginBottom())
+
+	//out := bytes.NewBuffer(nil)
+
+	pdfg.AddPage(htmltopdf.NewPageReader(strings.NewReader(in.GetHtmlBody())))
+
+	if err := pdfg.Create(); err != nil {
+		return nil, err
+	}
+
+	/*
 		if in.GetHtmlHeader() != "" {
 			headerFile, err := templateToTempFile(in.GetHtmlHeader())
 			if err != nil {
@@ -84,23 +90,12 @@ func (s *tGrpcServer) Generate(ctx context.Context, in *pb.GenerateRequest) (*pb
 			}()
 			tmpl.Footer.CustomLocation = footerFile.Name()
 		}
+	*/
 
-		tmpl.EnableJavascript = true
-		tmpl.Zoom = in.GetZoom()
-		converter.DPI = in.GetDpi()
-		converter.PaperSize = htmltopdf.PaperSize(in.GetPageSize())
-		converter.Orientation = htmltopdf.Orientation(in.GetOrientation())
-		converter.Colorspace = htmltopdf.Colorspace(colorMode)
-		converter.MarginLeft = in.GetMarginLeft()
-		converter.MarginRight = in.GetMarginRight()
-		converter.MarginTop = in.GetMarginTop()
-		converter.MarginBottom = in.GetMarginBottom()
-		converter.UseCompression = true
-		return converter.Run(out)
-	}); err != nil {
-		return &pb.GenerateResponse{Pdf: nil, Error: err.Error()}, nil
-	}
-	return &pb.GenerateResponse{Pdf: out.Bytes()}, nil
+	//	tmpl.EnableJavascript = true
+	//	tmpl.Zoom = in.GetZoom()
+
+	return &pb.GenerateResponse{Pdf: pdfg.Bytes()}, nil
 }
 
 func templateToTempFile(templateData string) (*os.File, error) {

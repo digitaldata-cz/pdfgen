@@ -1,7 +1,6 @@
 package main
 
 import (
-	"io/ioutil"
 	"os"
 
 	"gopkg.in/yaml.v3"
@@ -22,7 +21,7 @@ func (p *tProgram) loadConfig() {
 	}
 	if _, err := os.Stat("config.yaml"); err == nil {
 		// Read config from file
-		data, err := ioutil.ReadFile("config.yaml")
+		data, err := os.ReadFile("config.yaml")
 		if err != nil {
 			logger.Error(err.Error())
 			return

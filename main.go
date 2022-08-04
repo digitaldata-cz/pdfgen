@@ -9,7 +9,6 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/digitaldata-cz/htmltopdf"
 	"github.com/kardianos/service"
 )
 
@@ -62,11 +61,6 @@ func main() {
 		}
 		return
 	}
-	// Initialize HTML library.
-	if err := htmltopdf.Init(); err != nil {
-		log.Fatal(err)
-	}
-	defer htmltopdf.Destroy()
 
 	// Start the service.
 	go func() {
@@ -102,13 +96,4 @@ func (p *tProgram) Stop(s service.Service) error {
 	// <-time.After(time.Second * 3)
 	time.Sleep(3 * time.Second)
 	return nil
-}
-
-// callFunc calls the provided function on the main thread.
-func callFunc(f func() error) error {
-	err := make(chan error)
-	callFuncRun <- func() {
-		err <- f()
-	}
-	return <-err
 }
