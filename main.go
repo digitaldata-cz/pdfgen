@@ -37,8 +37,10 @@ func main() {
 	options["Restart"] = "on-success"
 	svcConfig := &service.Config{
 		Name:        "pdfgen",
-		DisplayName: "pdfgen",
+		DisplayName: "PDFgen",
 		Description: "Service for generating PDF from HTML over gRPC",
+		Option:      options,
+		EnvVars:     map[string]string{"installed": "true"},
 	}
 
 	prg := &tProgram{}
