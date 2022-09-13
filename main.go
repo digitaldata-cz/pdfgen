@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"runtime"
 	"time"
 
 	"github.com/kardianos/service"
@@ -19,11 +18,6 @@ var (
 type tProgram struct {
 	exit   chan struct{}
 	config *tConfig
-}
-
-func init() {
-	// Set main function to run on the main thread.
-	runtime.LockOSThread()
 }
 
 func main() {
