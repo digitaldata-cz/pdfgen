@@ -2,16 +2,13 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"net"
 	"os"
 	"strings"
-	"time"
 
 	htmltopdf "github.com/SebastiaanKlippert/go-wkhtmltopdf"
 	pb "github.com/digitaldata-cz/pdfgen/proto/go"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/peer"
 )
 
 type tGrpcServer struct {
@@ -39,12 +36,14 @@ func startServer(config *tConfig) {
 }
 
 func (s *tGrpcServer) Generate(ctx context.Context, in *pb.GenerateRequest) (*pb.GenerateResponse, error) {
-	startTime := time.Now()
-	peer, _ := peer.FromContext(ctx)
-	logger.Infof("Generate request from %s started", peer.Addr.String())
-	defer func() {
-		logger.Infof("Generate request from %s finished aster %s", peer.Addr.String(), time.Since(startTime))
-	}()
+	/*
+		startTime := time.Now()
+		peer, _ := peer.FromContext(ctx)
+			logger.Infof("Generate request from %s started", peer.Addr.String())
+			defer func() {
+				logger.Infof("Generate request from %s finished aster %s", peer.Addr.String(), time.Since(startTime))
+			}()
+	*/
 
 	pdfg, err := htmltopdf.NewPDFGenerator()
 	if err != nil {
@@ -55,48 +54,43 @@ func (s *tGrpcServer) Generate(ctx context.Context, in *pb.GenerateRequest) (*pb
 	pdfg.Orientation.Set(in.GetOrientation())
 	pdfg.Grayscale.Set(in.GetGrayscale())
 	pdfg.PageSize.Set(in.GetPageSize())
-	fmt.Println("MARGIN-TOP: ", in.GetMarginTop())
 	pdfg.MarginTop.Set(uint(in.GetMarginTop()))
 	pdfg.MarginBottom.Set(uint(in.GetMarginBottom()))
 	pdfg.MarginLeft.Set(uint(in.GetMarginLeft()))
 	pdfg.MarginRight.Set(uint(in.GetMarginRight()))
 
-	//out := bytes.NewBuffer(nil)
+	pdfPages := htmltopdf.NewPageReader(strings.NewReader(in.GetHtmlBody()))
+	pdfPages.DisableJavascript.Set(false)
+	pdfPages.Zoom.Set(in.GetZoom())
 
-	pdfg.AddPage(htmltopdf.NewPageReader(strings.NewReader(in.GetHtmlBody())))
+	if in.GetHtmlHeader() != "" {
+		headerFile, err := templateToTempFile(in.GetHtmlHeader())
+		if err != nil {
+			return nil, err
+		}
+		defer func() {
+			headerFile.Close()
+			os.Remove(headerFile.Name())
+		}()
+		pdfPages.HeaderHTML.Set(headerFile.Name())
+	}
+	if in.GetHtmlFooter() != "" {
+		footerFile, err := templateToTempFile(in.GetHtmlFooter())
+		if err != nil {
+			return nil, err
+		}
+		defer func() {
+			footerFile.Close()
+			os.Remove(footerFile.Name())
+		}()
+		pdfPages.FooterHTML.Set(footerFile.Name())
+	}
+
+	pdfg.AddPage(pdfPages)
 
 	if err := pdfg.Create(); err != nil {
 		return nil, err
 	}
-
-	/*
-		if in.GetHtmlHeader() != "" {
-			headerFile, err := templateToTempFile(in.GetHtmlHeader())
-			if err != nil {
-				return err
-			}
-			defer func() {
-				headerFile.Close()
-				os.Remove(headerFile.Name())
-			}()
-			tmpl.Header.CustomLocation = headerFile.Name()
-		}
-		if in.GetHtmlFooter() != "" {
-			footerFile, err := templateToTempFile(in.GetHtmlFooter())
-			if err != nil {
-				return err
-			}
-			defer func() {
-				footerFile.Close()
-				os.Remove(footerFile.Name())
-			}()
-			tmpl.Footer.CustomLocation = footerFile.Name()
-		}
-	*/
-
-	//	tmpl.EnableJavascript = true
-	//	tmpl.Zoom = in.GetZoom()
-
 	return &pb.GenerateResponse{Pdf: pdfg.Bytes()}, nil
 }
 
