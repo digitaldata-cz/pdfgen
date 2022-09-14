@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"net"
 	"os"
 	"strings"
@@ -54,10 +55,11 @@ func (s *tGrpcServer) Generate(ctx context.Context, in *pb.GenerateRequest) (*pb
 	pdfg.Orientation.Set(in.GetOrientation())
 	pdfg.Grayscale.Set(in.GetGrayscale())
 	pdfg.PageSize.Set(in.GetPageSize())
-	// pdfg.MarginLeft.Set(in.GetMarginLeft())
-	// pdfg.MarginRight.Set(in.GetMarginRight())
-	// pdfg.MarginTop.Set(in.GetMarginTop())
-	// pdfg.MarginBottom.Set(in.GetMarginBottom())
+	fmt.Println("MARGIN-TOP: ", in.GetMarginTop())
+	pdfg.MarginTop.Set(uint(in.GetMarginTop()))
+	pdfg.MarginBottom.Set(uint(in.GetMarginBottom()))
+	pdfg.MarginLeft.Set(uint(in.GetMarginLeft()))
+	pdfg.MarginRight.Set(uint(in.GetMarginRight()))
 
 	//out := bytes.NewBuffer(nil)
 

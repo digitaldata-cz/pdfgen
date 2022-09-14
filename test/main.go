@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"io/ioutil"
 	"log"
+	"os"
 	"time"
 
 	pb "github.com/digitaldata-cz/pdfgen/proto/go"
@@ -29,10 +29,10 @@ func main() {
 		PageSize:     "A4",
 		Grayscale:    false,
 		Orientation:  "Landscape",
-		MarginLeft:   "10mm",
-		MarginRight:  "10mm",
-		MarginTop:    "10mm",
-		MarginBottom: "20mm",
+		MarginLeft:   10,
+		MarginRight:  10,
+		MarginTop:    10,
+		MarginBottom: 10,
 		HtmlBody: `
 <!DOCTYPE html>
 <html>
@@ -85,5 +85,5 @@ function getPdfInfo() {
 	if r.Error != "" {
 		log.Fatalf("Error2: %s", r.Error)
 	}
-	ioutil.WriteFile("test.pdf", r.Pdf, 0644)
+	os.WriteFile("test.pdf", r.Pdf, 0644)
 }

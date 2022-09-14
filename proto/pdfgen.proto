@@ -6,19 +6,19 @@ package pdfgen;
 
 // Request message
 message GenerateRequest {
-  string name = 1;
-  uint64 dpi = 2;
-  double zoom = 3;
-  string pageSize = 4;
-  string orientation = 5;
-  bool grayscale = 6;
-  string marginLeft = 7;
-  string marginRight = 8;
-  string marginTop = 9;
-  string marginBottom = 10;
-  string htmlBody = 11;
-  string htmlHeader = 12;
-  string htmlFooter = 13;
+  string  name = 1;
+  uint64  dpi = 2;
+  double  zoom = 3;
+  string  pageSize = 4;
+  string  orientation = 5;
+  bool    grayscale = 6;
+  uint64    marginLeft = 7;
+  uint64   marginRight = 8;
+  uint64   marginTop = 9;
+  uint64   marginBottom = 10;
+  string  htmlBody = 11;
+  string  htmlHeader = 12;
+  string  htmlFooter = 13;
 }
 
 // Response message

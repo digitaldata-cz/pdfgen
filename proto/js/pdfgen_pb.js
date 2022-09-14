@@ -97,10 +97,10 @@ proto.pdfgen.GenerateRequest.toObject = function(includeInstance, msg) {
     pagesize: jspb.Message.getFieldWithDefault(msg, 4, ""),
     orientation: jspb.Message.getFieldWithDefault(msg, 5, ""),
     grayscale: jspb.Message.getBooleanFieldWithDefault(msg, 6, false),
-    marginleft: jspb.Message.getFieldWithDefault(msg, 7, ""),
-    marginright: jspb.Message.getFieldWithDefault(msg, 8, ""),
-    margintop: jspb.Message.getFieldWithDefault(msg, 9, ""),
-    marginbottom: jspb.Message.getFieldWithDefault(msg, 10, ""),
+    marginleft: jspb.Message.getFieldWithDefault(msg, 7, 0),
+    marginright: jspb.Message.getFieldWithDefault(msg, 8, 0),
+    margintop: jspb.Message.getFieldWithDefault(msg, 9, 0),
+    marginbottom: jspb.Message.getFieldWithDefault(msg, 10, 0),
     htmlbody: jspb.Message.getFieldWithDefault(msg, 11, ""),
     htmlheader: jspb.Message.getFieldWithDefault(msg, 12, ""),
     htmlfooter: jspb.Message.getFieldWithDefault(msg, 13, "")
@@ -165,19 +165,19 @@ proto.pdfgen.GenerateRequest.deserializeBinaryFromReader = function(msg, reader)
       msg.setGrayscale(value);
       break;
     case 7:
-      var value = /** @type {string} */ (reader.readString());
+      var value = /** @type {number} */ (reader.readUint64());
       msg.setMarginleft(value);
       break;
     case 8:
-      var value = /** @type {string} */ (reader.readString());
+      var value = /** @type {number} */ (reader.readUint64());
       msg.setMarginright(value);
       break;
     case 9:
-      var value = /** @type {string} */ (reader.readString());
+      var value = /** @type {number} */ (reader.readUint64());
       msg.setMargintop(value);
       break;
     case 10:
-      var value = /** @type {string} */ (reader.readString());
+      var value = /** @type {number} */ (reader.readUint64());
       msg.setMarginbottom(value);
       break;
     case 11:
@@ -264,29 +264,29 @@ proto.pdfgen.GenerateRequest.serializeBinaryToWriter = function(message, writer)
     );
   }
   f = message.getMarginleft();
-  if (f.length > 0) {
-    writer.writeString(
+  if (f !== 0) {
+    writer.writeUint64(
       7,
       f
     );
   }
   f = message.getMarginright();
-  if (f.length > 0) {
-    writer.writeString(
+  if (f !== 0) {
+    writer.writeUint64(
       8,
       f
     );
   }
   f = message.getMargintop();
-  if (f.length > 0) {
-    writer.writeString(
+  if (f !== 0) {
+    writer.writeUint64(
       9,
       f
     );
   }
   f = message.getMarginbottom();
-  if (f.length > 0) {
-    writer.writeString(
+  if (f !== 0) {
+    writer.writeUint64(
       10,
       f
     );
@@ -424,74 +424,74 @@ proto.pdfgen.GenerateRequest.prototype.setGrayscale = function(value) {
 
 
 /**
- * optional string marginLeft = 7;
- * @return {string}
+ * optional uint64 marginLeft = 7;
+ * @return {number}
  */
 proto.pdfgen.GenerateRequest.prototype.getMarginleft = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 7, ""));
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 7, 0));
 };
 
 
 /**
- * @param {string} value
+ * @param {number} value
  * @return {!proto.pdfgen.GenerateRequest} returns this
  */
 proto.pdfgen.GenerateRequest.prototype.setMarginleft = function(value) {
-  return jspb.Message.setProto3StringField(this, 7, value);
+  return jspb.Message.setProto3IntField(this, 7, value);
 };
 
 
 /**
- * optional string marginRight = 8;
- * @return {string}
+ * optional uint64 marginRight = 8;
+ * @return {number}
  */
 proto.pdfgen.GenerateRequest.prototype.getMarginright = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 8, ""));
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 8, 0));
 };
 
 
 /**
- * @param {string} value
+ * @param {number} value
  * @return {!proto.pdfgen.GenerateRequest} returns this
  */
 proto.pdfgen.GenerateRequest.prototype.setMarginright = function(value) {
-  return jspb.Message.setProto3StringField(this, 8, value);
+  return jspb.Message.setProto3IntField(this, 8, value);
 };
 
 
 /**
- * optional string marginTop = 9;
- * @return {string}
+ * optional uint64 marginTop = 9;
+ * @return {number}
  */
 proto.pdfgen.GenerateRequest.prototype.getMargintop = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 9, ""));
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 9, 0));
 };
 
 
 /**
- * @param {string} value
+ * @param {number} value
  * @return {!proto.pdfgen.GenerateRequest} returns this
  */
 proto.pdfgen.GenerateRequest.prototype.setMargintop = function(value) {
-  return jspb.Message.setProto3StringField(this, 9, value);
+  return jspb.Message.setProto3IntField(this, 9, value);
 };
 
 
 /**
- * optional string marginBottom = 10;
- * @return {string}
+ * optional uint64 marginBottom = 10;
+ * @return {number}
  */
 proto.pdfgen.GenerateRequest.prototype.getMarginbottom = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 10, ""));
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 10, 0));
 };
 
 
 /**
- * @param {string} value
+ * @param {number} value
  * @return {!proto.pdfgen.GenerateRequest} returns this
  */
 proto.pdfgen.GenerateRequest.prototype.setMarginbottom = function(value) {
-  return jspb.Message.setProto3StringField(this, 10, value);
+  return jspb.Message.setProto3IntField(this, 10, value);
 };
 
 
