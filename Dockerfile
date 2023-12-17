@@ -1,4 +1,4 @@
-FROM --platform=amd64 golang:1.19-buster AS builder
+FROM --platform=amd64 golang:1.21-buster AS builder
 WORKDIR /build/
 ADD *.go go.mod go.sum ./
 ADD proto/go/*.go proto/go/go.mod proto/go/go.sum ./proto/go/
