@@ -21,6 +21,7 @@ func (p *tProgram) run() {
 }
 
 func startServer(config *tConfig) {
+	logger.Infof("Starting pdfgen server version %s", appVersion)
 	listener, err := net.Listen("tcp", net.JoinHostPort(config.Address, config.Port))
 	if err != nil {
 		logger.Error(err.Error())

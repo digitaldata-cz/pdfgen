@@ -10,6 +10,8 @@ import (
 	"github.com/kardianos/service"
 )
 
+const appVersion = "dev"
+
 var (
 	svcFlag = flag.String("service", "", "Service controll (start, stop, install, uninstall)")
 	logger  service.Logger
