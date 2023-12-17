@@ -11,9 +11,7 @@ jobs:
       matrix:
         goos: [linux, windows]
         goarch: [amd64, arm64]
-        exclude:
-          - goarch: arm64
-            goos: windows
+
     steps:
  
     - name: Checkout source
