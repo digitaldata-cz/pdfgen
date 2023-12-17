@@ -5,7 +5,7 @@ go 1.18
 replace github.com/digitaldata-cz/pdfgen/proto/go => ../proto/go
 
 require (
-	github.com/digitaldata-cz/pdfgen/proto/go v0.0.0-20230112121713-d734e008a729
+	github.com/digitaldata-cz/pdfgen/proto/go v0.0.0-20231217182316-02f3b48d11d6
 	google.golang.org/grpc v1.60.0
 )
 
