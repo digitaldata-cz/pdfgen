@@ -1,6 +1,7 @@
 on:
-  release:
-    types: [ prereleased ]
+  # Release builds moved to the local Taskfile in portunus-installer-server-win.
+  # Manual trigger kept as a fallback:
+  workflow_dispatch:
 
 jobs:
 
